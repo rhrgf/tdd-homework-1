@@ -10,9 +10,13 @@
 - `MapInfo& MapManager::getMapInfo()` 获取地图数据信息
 
 ### 3. 定位器类`Locator`
-- `void Locator::setMapManager(MapManager manManager)` 设置寻路时需要的地图管理器类
+- `void Locator::setMapManager(MapManager& mapManager)` 设置定位时需要的地图管理器类
 - `void Locator::setSensor(Sensor& sensor)` 设置寻路时需要的传感器类
-- `Path& Locator::getPath()` 获取路线图
+- `Location& Locator::getCurrentLocation()` 借助设置好的`mapManager`和`sensor`获取当前位置
+
+### 4. 寻路类`PathGenerator`
+- `void PathGenerator::setMapManager(MapManager& mapManager)` 设置寻路时需要的地图管理器类
+- `Path& PathGerator::getPath(Location& cur, Location& dst)` `cur`是`Locator::getCurrentLocation()`返回的当前位置，`dst`是目标地址. 该函数借助`mapManger`计算一条`cur`到`dst`的路线图
 
 ## 测试代码
 ### 1. 传感器类`Sensor`
@@ -78,11 +82,27 @@ void TestMapManager1()
 
 ### 3. 定位器类`Locator`
 ```
-void TestLocator!()
+void TestLocator()
 {
+	// mapManager & sensor 根据测试需要手工填充,即直接使用 setter 函数，下同
 	locator.setmapManager(mapManager);
     locator.setSensor(sensor);
-    Path path = locator.getPath(startLocation, endLocation);
+    Location location = locator.getCurrentLocation();
+    // 检查 location 是否符合预期
+    // 关于如何模拟一个当前位置？
+    // 计算当前位置需要信号源信息和障碍物干扰系数，前者由 sensor.getCurrentWifiList() 提供,
+    // 后者由 mapManager.getMapInfo() 提供。那么，可以预置一组模拟的信号源信息和地图数据信息，
+    // 使得 getCurrentLocation() 能获得所需数据并计算结果.
+}
+```
+
+### 4. 寻路类`PathGenerator`
+```
+void TestPathGenerator()
+{
+	Location cur, dst; // 两个 Location 结构手工填充
+    pathGenerator.setMapManager(mapManger)
+    Path path = pathGenerator.getPath(cur, dst);
     // 检查 path 是否符合预期
 }
 ```
